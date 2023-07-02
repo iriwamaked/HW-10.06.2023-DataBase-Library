@@ -19,7 +19,7 @@ LEFT JOIN S_Cards sc ON s.id=sc.id_student
 WHERE sc.id_student IS NULL OR sc.date_out IS NULL
 
 /*4. Показать самого активного библиотекаря (выдал больше всего книг)*/
-CREATE VIEW ActiveLabrarian AS
+CREATE VIEW ActiveLibrarian AS
 SELECT TOP 1 l.first_name [Имя], l.last_name [фамилия], COUNT(*) AS [Количество выданных книг]
 FROM Librarian l
 INNER JOIN S_Cards sc ON l.id=sc.id_librarian
