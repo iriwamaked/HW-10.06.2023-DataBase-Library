@@ -1,0 +1,36 @@
+/*1. Показать имена преподавателей и названия книг, которые они взяли в библиотеке*/
+CREATE VIEW TeacherTakenBook AS
+SELECT t.first_name AS [Имя], t.last_name AS [Фамилия], b.name AS [Название книги]
+FROM Teacher t, Book b, T_Cards c
+WHERE t.id=c.id_teacher AND c.id_book=b.id
+
+/*2. Показать имена студентов, которые взяли, но не вернули книги*/
+CREATE VIEW StudentsDidNotReturnBooks AS
+SELECT s.first_name [Имя], s.last_name [Фамилия]
+FROM Student s
+INNER JOIN S_Cards ON s.id=S_Cards.id_student
+WHERE S_Cards.date_in IS NULL
+
+/*3. Показать имена студентов, никогда не бравших книг*/
+CREATE VIEW StudentDidNotTakeBooks AS
+SELECT s.first_name [Имя], s.last_name [Фамилия]
+FROM Student s
+LEFT JOIN S_Cards sc ON s.id=sc.id_student
+WHERE sc.id_student IS NULL OR sc.date_out IS NULL
+
+/*4. Показать самого активного библиотекаря (выдал больше всего книг)*/
+CREATE VIEW ActiveLabrarian AS
+SELECT TOP 1 l.first_name [Имя], l.last_name [фамилия], COUNT(*) AS [Количество выданных книг]
+FROM Librarian l
+INNER JOIN S_Cards sc ON l.id=sc.id_librarian
+GROUP BY l.last_name, l.first_name
+ORDER BY COUNT(*) DESC
+
+/*5. Показать самого ответственного библиотекаря (книг вернули больше всего)*/
+CREATE VIEW ResponsibleLibrarian AS
+SELECT TOP 1 l.last_name [Фамилия],l.first_name [Имя], COUNT(*) AS [Количество возвращенных книг]
+FROM Librarian l
+INNER JOIN S_Cards sc ON l.id=sc.id_librarian
+WHERE sc.date_in IS NOT NULL
+GROUP BY l.last_name, l.first_name
+ORDER BY COUNT(*) DESC
